@@ -82,6 +82,17 @@ instr_mem im(
     .rdata(i_datain)
 );
 
+wire cache_dwe;
+wire cache_hit;
+wire [15:0]cache_data;
+cache cache_i(
+    .dwe(cache_dwe),
+    .addr(d_addr),
+    .wdata(d_datain),
+    .hit(cache_hit),
+    .rdata(cache_data)
+);
+
 cpu cpu_instance(
     .clock(bclk),
     .reset(reset),
@@ -98,5 +109,4 @@ cpu cpu_instance(
     .d_dataout(d_dataout),
     .d_we(d_we)
 );
-
 endmodule
