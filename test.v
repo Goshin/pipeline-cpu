@@ -61,8 +61,8 @@ module test;
 		#100;
         
 		// Add stimulus here
-$display(" pc:     id_ir      :     ex_ir      :    mem_ir      :     wb_ir      :reg_A:reg_B:reg_C:da: dd :w:reC1:gr1 :gr2 :gr3 :gr4 :gr5 :gr6 :gr7 :NF:ZF:CF");
-$monitor("%d:%b:%b:%b:%b:%h :%h :%h :%h:%h:%b:%h:%h:%h:%h:%h:%h:%h:%h:%b :%b :%b ", uut.cpu_instance.pc, uut.cpu_instance.id_ir, uut.cpu_instance.ex_ir, uut.cpu_instance.mem_ir, uut.cpu_instance.wb_ir, uut.cpu_instance.reg_A, uut.cpu_instance.reg_B, uut.cpu_instance.reg_C, uut.d_addr, uut.d_dataout, uut.d_we, uut.cpu_instance.reg_C1, uut.cpu_instance.gr[1], uut.cpu_instance.gr[2], uut.cpu_instance.gr[3], uut.cpu_instance.gr[4], uut.cpu_instance.gr[5], uut.cpu_instance.gr[6], uut.cpu_instance.gr[7], uut.cpu_instance.nf, uut.cpu_instance.zf, uut.cpu_instance.cf);
+$display("  t: pc:     id_ir      :reg_A:reg_B:reg_C:da: dd :w:reC1:gr1 :gr2 :gr3 :gr4 :gr5 :gr6 :gr7 :NF:ZF:CF");
+$monitor("%d:%d:%b:%h :%h :%h :%h:%h:%b:%h:%h:%h:%h:%h:%h:%h:%h:%b :%b :%b ", uut.ticks, uut.cpu_instance.pc, uut.cpu_instance.id_ir, uut.cpu_instance.reg_A, uut.cpu_instance.reg_B, uut.cpu_instance.reg_C, uut.d_addr, uut.d_dataout, uut.d_we, uut.cpu_instance.reg_C1, uut.cpu_instance.gr[1], uut.cpu_instance.gr[2], uut.cpu_instance.gr[3], uut.cpu_instance.gr[4], uut.cpu_instance.gr[5], uut.cpu_instance.gr[6], uut.cpu_instance.gr[7], uut.cpu_instance.nf, uut.cpu_instance.zf, uut.cpu_instance.cf);
 	
 enable <= 1; start <= 0; select_y <= 0;
 

@@ -55,6 +55,10 @@ always@(clk)
 				end
 		end
 
+reg [7:0] ticks = 0;
+always@(posedge bclk)
+    ticks = ticks + 1;
+
 show sa(
     .clk(clk),
     .num(show_data),

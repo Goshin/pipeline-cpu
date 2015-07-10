@@ -75,25 +75,14 @@ assign rdata = i_mem[addr];
 
 always@(posedge clk)
 	case(addr)
-        0 : i_mem[addr] <= {`ADDI, `gr1, 4'b0000,  4'b1001};
-        1 : i_mem[addr] <= {`ADDI, `gr2, 4'b0000,  4'b1001};
-        2 : i_mem[addr] <= {`JUMP, 11'b000_0000_0101};//jump to start
-        3 : i_mem[addr] <= {`SUBI, `gr1, 4'd0, 4'd1};//new_round
-        4 : i_mem[addr] <= {`BZ, `gr7, 4'b0001, 4'b0010};//jump to end
-        5 : i_mem[addr] <= {`LOAD, `gr3, 1'b0, `gr0, 4'd0};//start
-        6 : i_mem[addr] <= {`LOAD, `gr4, 1'b0, `gr0, 4'd1};
-        7 : i_mem[addr] <= {`CMP, 3'd0, 1'b0, `gr3, 1'b0, `gr4};
-        8 : i_mem[addr] <= {`BN, `gr7, 4'h0, 4'b1011};//jump to NO_op
-        9 : i_mem[addr] <= {`STORE, `gr3, 1'b0, `gr0, 4'd1};
-        10: i_mem[addr] <= {`STORE, `gr4, 1'b0, `gr0, 4'd0};
-        11: i_mem[addr] <= {`ADDI, `gr0, 4'b0000, 4'b0001};//NO_OP
-        12: i_mem[addr] <= {`CMP, 3'd0, 1'b0, `gr0, 1'b0, `gr2};
-        13: i_mem[addr] <= {`BN, `gr7, 4'b0001, 4'b0001};//jump to continue 
-        14: i_mem[addr] <= {`SUBI, `gr2, 4'd0, 4'd1};
-        15: i_mem[addr] <= {`SUB, `gr0, 1'b0,`gr0, 1'b0,`gr0};
-        16: i_mem[addr] <= {`JUMP, 11'b000_0000_0011};//jump to new round
-        17: i_mem[addr] <= {`JUMP, 11'b000_0000_0101};//jump to start,continue
-        18: i_mem[addr] <= {`HALT, 11'd0};
+        0 : i_mem[addr] <= {`ADDI, `gr1, 4'b0000,  4'h0005};//i=5
+        1 : i_mem[addr] <= {`BZ, `gr0, 4'b0000,  4'h0007};//if !i
+        2 : i_mem[addr] <= {`LOAD, `gr2, 1'b0, `gr0, 4'h4};
+        3 : i_mem[addr] <= {`LOAD, `gr3, 1'b0, `gr0, 4'hc};
+        4 : i_mem[addr] <= {`LOAD, `gr4, 1'b0, `gr0, 4'h8};
+        5 : i_mem[addr] <= {`SUBI, `gr1, 4'd0, 4'd1};//i--
+        6 : i_mem[addr] <= {`JUMP, 11'b000_0000_0001};
+        7 : i_mem[addr] <= {`HALT, 11'd0};
         default : i_mem[addr] <= {`NOP, 11'b000_0000_0000};
 	endcase
 
