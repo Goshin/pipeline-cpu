@@ -74,5 +74,6 @@ enable <= 1; start <= 0; select_y <= 0;
 	end
       always #1  clk= ~clk;
       always #2 uut.bclk=~uut.bclk;
+      always #10 uut.mem_clk=~uut.mem_clk;
       assign uut.sa.mclk = uut.sa.count[0];
 endmodule

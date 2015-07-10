@@ -66,9 +66,10 @@ show sa(
     .en(en)
 );
 
+reg mem_clk = 0;
 data_mem dm(
     .rst(reset),
-    .clk(clk),
+    .clk(mem_clk),
     .dwe(d_we),
     .addr(d_addr),
     .wdata(d_dataout),
