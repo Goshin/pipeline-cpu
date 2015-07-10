@@ -36,8 +36,9 @@
 `define NAND  5'b10111
 
 // FSM for CPU control
-`define idle 1'b0
-`define exec 1'b1
+`define idle 2'b00
+`define exec 2'b01
+`define mem_wait 2'b10
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -59,6 +60,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module cpu(
 input clock, reset, enable, start,
+input mem_clock,
 input [3:0] select_y,
 input [15:0] i_datain,
 input [15:0] d_datain,
@@ -78,8 +80,12 @@ reg dw;
 
 reg [15:0] ALUo;
 
-reg state;
-reg next_state;
+reg [1:0] state;
+reg [1:0] next_state;
+
+reg mem_reach = 0;
+wire mem_request;
+assign mem_request = ex_ir[15:11] == `STORE || ex_ir[15:11] == `LOAD;
 
 assign i_addr = pc;
 assign d_we  = dw;
@@ -195,10 +201,21 @@ always @(*)
                 if ((enable == 1'b0) 
                 || (wb_ir[15:11] == `HALT))
                     next_state <= `idle;
+                else if (mem_request)
+                    begin
+                        mem_reach <= 0;
+                        next_state <= `mem_wait;
+                    end
                 else
+                    next_state <= `exec;
+            `mem_wait :
+                if (mem_reach == 1)
                     next_state <= `exec;
         endcase
     end
+    
+always @(posedge mem_clock)
+    mem_reach <= 1;
     
 //************* IF *************//
 always @(posedge clock or negedge reset)

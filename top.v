@@ -87,6 +87,7 @@ cpu cpu_instance(
     .reset(reset),
     .enable(enable),
     .start(start),
+    .mem_clock(mem_clk),
     .select_y(select_y),
     .i_datain(i_datain),
     .d_datain(d_datain),
