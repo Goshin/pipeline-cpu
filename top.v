@@ -85,10 +85,13 @@ instr_mem im(
 wire cache_dwe;
 wire cache_hit;
 wire [15:0]cache_data;
+wire [7:0]cache_addr;
 cache cache_i(
+    .rst(reset),
     .dwe(cache_dwe),
-    .addr(d_addr),
+    .addr(cache_addr),
     .wdata(d_datain),
+    
     .hit(cache_hit),
     .rdata(cache_data)
 );
@@ -102,11 +105,15 @@ cpu cpu_instance(
     .select_y(select_y),
     .i_datain(i_datain),
     .d_datain(d_datain),
+    .cache_hit(cache_hit),
+    .cache_data(cache_data),
     
     .y(show_data),
     .d_addr(d_addr),
+    .cache_addr(cache_addr),
     .i_addr(i_addr),
     .d_dataout(d_dataout),
-    .d_we(d_we)
+    .d_we(d_we),
+    .cache_dwe(cache_dwe)
 );
 endmodule

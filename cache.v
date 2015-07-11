@@ -21,6 +21,7 @@
 
 //Cache 组合逻辑实现//
 module cache(
+input rst,
 input dwe,
 input [7:0] addr,
 input [15:0] wdata,
@@ -61,7 +62,17 @@ wire hit2;
 
 assign hit1 = `v1 && `tag1 == tag;
 assign hit2 = `v2 && `tag2 == tag;
-assign hit = hit1 & hit2;
+assign hit = hit1 | hit2;
+
+//initialize
+always @(*)
+    if (!rst)
+        begin
+            d[0] = 48'b0;
+            d[1] = 48'b0;
+            d[2] = 48'b0;
+            d[3] = 48'b0;
+        end
 
 //read
 always @(*)
@@ -86,13 +97,31 @@ always @(posedge dwe)
         if (`v1 != 1 || `u1 == 0)
             begin
                 `v1 <= 1;
+                `tag1 <= tag;
                 `block1 <= wdata;
             end
         else
             begin
                 `v2 <= 1;
+                `tag2 <= tag;
                 `block2 <= wdata;
             end
     end
-    
+
+wire v1;
+wire u1;    
+wire [5:0]tag1;
+wire [15:0]block1;
+assign v1 = `v1;
+assign u1 = `u1;
+assign tag1 = `tag1;
+assign block1 = `block1;
+wire v2;
+wire u2;    
+wire [5:0]tag2;
+wire [15:0]block2;
+assign v2 = `v2;
+assign u2 = `u2;
+assign tag2 = `tag2;
+assign block2 = `block2;
 endmodule
