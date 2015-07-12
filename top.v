@@ -89,7 +89,8 @@ wire [7:0]cache_addr;
 cache cache_i(
     .rst(reset),
     .dwe(cache_dwe),
-    .addr(cache_addr),
+    .r_addr(cache_addr),
+    .w_addr(d_addr),
     .wdata(d_datain),
     
     .hit(cache_hit),
