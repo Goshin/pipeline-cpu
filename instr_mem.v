@@ -78,8 +78,8 @@ always@(posedge clk)
         0 : i_mem[addr] <= {`ADDI, `gr1, 4'b0000,  4'h0005};//i=5
         1 : i_mem[addr] <= {`BZ, `gr0, 4'b0000,  4'h0007};//if !i
         2 : i_mem[addr] <= {`LOAD, `gr2, 1'b0, `gr0, 4'h1};
-        3 : i_mem[addr] <= {`LOAD, `gr3, 1'b0, `gr0, 4'h2};
-        4 : i_mem[addr] <= {`LOAD, `gr4, 1'b0, `gr0, 4'h3};
+        3 : i_mem[addr] <= {`LOAD, `gr3, 1'b0, `gr0, 4'h5};
+        4 : i_mem[addr] <= {`LOAD, `gr4, 1'b0, `gr0, 4'h9};
         5 : i_mem[addr] <= {`SUBI, `gr1, 4'd0, 4'd1};//i--
         6 : i_mem[addr] <= {`JUMP, 11'b000_0000_0001};
         7 : i_mem[addr] <= {`HALT, 11'd0};

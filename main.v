@@ -65,11 +65,10 @@ input [3:0] select_y,
 input [15:0] i_datain,
 input [15:0] d_datain,
 input cache_hit,
-input [15:0] cache_data,
 
 output reg [15:0] y,
 output [7:0] d_addr,
-output [7:0] cache_addr,
+output [7:0] ex_addr,
 output [7:0] i_addr,
 output [15:0] d_dataout,
 output d_we,
@@ -97,7 +96,7 @@ assign d_we  = dw;
 assign d_addr = reg_C[7:0];
 assign d_dataout = smdr1;
 
-assign cache_addr = ALUo[7:0];
+assign ex_addr = ALUo[7:0];
 
 `define id_r1 id_ir[10:8]
 `define id_r2 id_ir[6:4]
@@ -485,18 +484,7 @@ always @(posedge clock or negedge reset)
                     wb_ir <= mem_ir;
 
                 if (mem_ir[15:11] == `LOAD)
-                    begin
-                        if (cache_hit)
-                            begin
-                                //cache_dwe <= 0;
-                                reg_C1 <= cache_data;
-                            end
-                        else
-                            begin
-                                //cache_dwe <= 1;
-                                reg_C1 <= d_datain;
-                            end
-                    end
+                    reg_C1 <= d_datain;
                 else
                     reg_C1 <= reg_C;
             end

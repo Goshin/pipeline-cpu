@@ -18,13 +18,11 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
-//Cache 组合逻辑实现//
 module cache(
 input rst,
 input dwe,
-input [7:0] r_addr,
-input [7:0] w_addr,
+input [7:0] ex_addr,
+input [7:0] mem_addr,
 input [15:0] wdata,
 output hit,
 output reg [15:0] rdata
@@ -37,34 +35,32 @@ output reg [15:0] rdata
 //(1 + 1 + 6 + 16) * 2 = 48
 reg [47:0] d [0:3];
 
-wire [5:0]r_tag;
-wire [1:0]r_set;
+//**************EX HIT***************//
+wire [5:0]ex_tag;
+wire [1:0]ex_set;
 
-assign r_tag = r_addr[7:2];
-assign r_set = r_addr[1:0];
+assign ex_tag = ex_addr[7:2];
+assign ex_set = ex_addr[1:0];
 
 //way1
-`define r_v1 d[r_set][47]
-`define r_u1 d[r_set][46]
-`define r_tag1 d[r_set][45:40]
-`define r_block1 d[r_set][39:24]
-
-
+`define ex_v1 d[ex_set][47]
+`define ex_u1 d[ex_set][46]
+`define ex_tag1 d[ex_set][45:40]
+`define ex_block1 d[ex_set][39:24]
 //way2
-`define r_v2 d[r_set][23]
-`define r_u2 d[r_set][22]
-`define r_tag2 d[r_set][21:16]
-`define r_block2 d[r_set][15:0]
-
+`define ex_v2 d[ex_set][23]
+`define ex_u2 d[ex_set][22]
+`define ex_tag2 d[ex_set][21:16]
+`define ex_block2 d[ex_set][15:0]
 
 wire hit1;
 wire hit2;
 
-assign hit1 = `r_v1 && `r_tag1 == r_tag;
-assign hit2 = `r_v2 && `r_tag2 == r_tag;
+assign hit1 = `ex_v1 && `ex_tag1 == ex_tag;
+assign hit2 = `ex_v2 && `ex_tag2 == ex_tag;
 assign hit = hit1 | hit2;
 
-//initialize
+//***********INITIALIZE************//
 always @(*)
     if (!rst)
         begin
@@ -74,74 +70,62 @@ always @(*)
             d[3] = 48'b0;
         end
 
-//read
+//*************MEM HIT**************//
+wire [5:0]mem_tag;
+wire [1:0]mem_set;
+
+assign mem_tag = mem_addr[7:2];
+assign mem_set = mem_addr[1:0];
+
+//way1
+`define mem_v1 d[mem_set][47]
+`define mem_u1 d[mem_set][46]
+`define mem_tag1 d[mem_set][45:40]
+`define mem_block1 d[mem_set][39:24]
+//way2
+`define mem_v2 d[mem_set][23]
+`define mem_u2 d[mem_set][22]
+`define mem_tag2 d[mem_set][21:16]
+`define mem_block2 d[mem_set][15:0]
+
+wire mem_hit1;
+wire mem_hit2;
+
+assign mem_hit1 = `mem_v1 && `mem_tag1 == mem_tag;
+assign mem_hit2 = `mem_v2 && `mem_tag2 == mem_tag;
+
+//**************READ***************//
 always @(*)
     begin
-        if (hit1)
+        if (mem_hit1)
             begin
-                `r_u1 <= 1;
-                `r_u2 <= 0;
-                rdata <= `r_block1;
+                `mem_u1 <= 1;
+                `mem_u2 <= 0;
+                rdata <= `mem_block1;
             end
-        else if (hit2)
+        else if (mem_hit2)
             begin
-                `r_u1 <= 0;
-                `r_u2 <= 1;
-                rdata <= `r_block2;
+                `mem_u1 <= 0;
+                `mem_u2 <= 1;
+                rdata <= `mem_block2;
             end
     end
     
-//**************write***************//
-wire [5:0]w_tag;
-wire [1:0]w_set;
-
-assign w_tag = w_addr[7:2];
-assign w_set = w_addr[1:0];
-
-//way1
-`define w_v1 d[w_set][47]
-`define w_u1 d[w_set][46]
-`define w_tag1 d[w_set][45:40]
-`define w_block1 d[w_set][39:24]
-
-
-//way2
-`define w_v2 d[w_set][23]
-`define w_u2 d[w_set][22]
-`define w_tag2 d[w_set][21:16]
-`define w_block2 d[w_set][15:0]
-
+//**************WRITE***************//
 always @(posedge dwe)
     begin
-        if (`w_v1 != 1 || `w_u1 == 0)
+        if (`mem_v1 != 1 || (`mem_v2 == 1 && `mem_u1 == 0))
             begin
-                `w_v1 <= 1;
-                `w_tag1 <= w_tag;
-                `w_block1 <= wdata;
+                `mem_v1 <= 1;
+                `mem_tag1 <= mem_tag;
+                `mem_block1 <= wdata;
             end
         else
             begin
-                `w_v2 <= 1;
-                `w_tag2 <= w_tag;
-                `w_block2 <= wdata;
+                `mem_v2 <= 1;
+                `mem_tag2 <= mem_tag;
+                `mem_block2 <= wdata;
             end
     end
 
-/*
-wire v1;
-wire u1;    
-wire [5:0]tag1;
-wire [15:0]block1;
-assign v1 = `v1;
-assign u1 = `u1;
-assign tag1 = `tag1;
-assign block1 = `block1;
-wire v2;
-wire u2;    
-wire [5:0]tag2;
-wire [15:0]block2;
-assign v2 = `v2;
-assign u2 = `u2;
-assign tag2 = `tag2;
-assign block2 = `block2;*/
 endmodule

@@ -33,8 +33,8 @@ always@(posedge clk or negedge rst)
         if(!rst)
             begin
                 d_mem[1] <= 16'h000a;
-                d_mem[2] <= 16'h000b;
-                d_mem[3] <= 16'h000c;
+                d_mem[5] <= 16'h000b;
+                d_mem[9] <= 16'h000c;
             end
         else if(dwe)
             d_mem[addr] <= wdata;
